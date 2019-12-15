@@ -1,0 +1,14 @@
+***********************************************************
+***		TEXT TO SPEECH (TTS)			***
+***********************************************************
+
+Logiciels :
+	- ORCA (ne semble pas adapté au raspberry 2)
+	- Pico TTS
+	- eSpeak <semble fonctionner>
+
+TODOs :
+	1- IHM pour recevoir les données météo
+	2- IHM pour recevoir les données GPS
+	3- IHM pour recevoir les données sur les marées
+

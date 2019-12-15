@@ -1,0 +1,13 @@
+1 – DWService est installé chez le dépanneur. Celui-ci crée un utilisateur et obtient un code en 9 chiffres par exemple : 589-269-568
+
+2 – sur l’ordinateur de l’utilisateur, lancer internet puis : http://dwservice.net
+3 – à droite on voit le Tux, cliquer dessus et bien regarder où s’installe le logiciel. 
+4 – s’il est dans le dossier Téléchargements, on voit alors dwagent.sh dans ce dossier.
+5 – clic-droit sur dwagent.sh, choisir « propriétés » puis « permissions » puis cocher :
+autoriser l’exécution du fichioer comme un programme.
+6 – lancer un terminal avec WIN + T
+et taper cd Té et tabuler, cela complète : cd Téléchargements
+7 – taper : sudo ./dwagent.sh on vous demande le mot de passe
+8 – quand le mot de passe est mis, les choses se déroulent, accepter l’installation et, à la fin, on vous demande le code d’installation – 
+il faut mettre alors le code de tout à l’heure : 589-269-568
+C’est alors terminé.
