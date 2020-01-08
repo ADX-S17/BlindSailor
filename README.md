@@ -1,4 +1,4 @@
-#BlindSailor
+# BlindSailor
 
 An app to blindly go to sea
 
