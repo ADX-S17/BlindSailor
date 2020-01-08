@@ -11,6 +11,10 @@ endif
 PYTHON=$(shell command -v python)
 PYTHON3=$(shell command -v python3)
 
+install:
+	@cat resources/install_script.sh
+	@./resources/install_script.sh
+
 tests:
 	@set -e && cd tests && rm -f logs/* && for TEST in `/bin/ls [^_]*.py`; \
 	do \
