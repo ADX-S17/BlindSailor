@@ -1,0 +1,1 @@
+from .BlindSailorApp import BlindSailorApp
