@@ -19,6 +19,13 @@ class NmeaHandler(IHandler):
         self._set_default_conf({
         })
 
+    """ IConfigurable """
+
+    def _setup_impl(self):
+        return True
+
+    """ Nmea """
+
     def __init_gsv_data(self):
         self._GsvMsgReceived = None
         self._GsvNbMsg = 0
@@ -27,13 +34,6 @@ class NmeaHandler(IHandler):
         self._SV_elevation = [0] * 20
         self._SV_SNR = [0] * 20
         self._gsv_init = True
-
-    """ IConfigurable """
-
-    def _setup_impl(self):
-        return True
-
-    """ Nmea """
 
     def __get_int(self, num):
         if num:
@@ -51,8 +51,12 @@ class NmeaHandler(IHandler):
 
         if self._GsvMsgReceived is None:
             NbMsg = self.__get_int(msg.num_messages)
+            if NbMsg is None or NbMsg <= 0:
+                self.log_error("Number of messages impossible: {}".format(NbMsg))
+                return
             self._GsvNbMsg = NbMsg
             self._GsvMsgReceived = [False] * NbMsg
+
         MsgReceived = self._GsvMsgReceived
 
         Nb_SV_In_View = self.__get_int(msg.num_sv_in_view)
@@ -80,8 +84,6 @@ class NmeaHandler(IHandler):
             SV_elevation[offset + 3] = self.__get_int(msg.elevation_deg_4)
             SV_SNR[offset + 3] = self.__get_int(msg.snr_4)
             
-        if not MsgReceived or self._GsvNbMsg <= 0:
-            return
         MsgReceived[Num_CurMsg - 1] = True
         if all(MsgReceived):
             self._gsv_init = False
@@ -114,19 +116,5 @@ class NmeaHandler(IHandler):
             return False
         ret = True
         if msg.sentence_type == 'GSV':
-            ret = ret and self._handle_gsv_msg(msg)
+            ret = self._handle_gsv_msg(msg)
         return ret
-
-    """ IService """
-
-    def _start_impl(self):
-        return True
-
-    def _stop_impl(self):
-        return True
-
-    def _pause_impl(self):
-        return True
-
-    def _resume_imp(self):
-        return True

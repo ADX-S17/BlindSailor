@@ -3,6 +3,9 @@
 *.pcap
 *.ini
 
+# install folder
+dependencies
+
 # vim
 *.swp
 
