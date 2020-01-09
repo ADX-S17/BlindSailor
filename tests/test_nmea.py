@@ -28,18 +28,25 @@ class TestNmea(unittest.TestCase):
         self.app.stop()
 
     def test_good_file(self):
+        path = os.path.join(os.path.dirname(__file__), "resources", "gps_output")
+        self.app.set_args("-G {}".format(path))
         if self.app.setup_app() is False:
             sys.exit(1)
-        path = os.path.join(os.path.dirname(__file__), "resources", "gps_output")
-        reader = sihd.Readers.sys.LineReader(path)
         test_handler = TestHandler()
-        reader.add_observer(self.app.nmea_handler)
         self.app.nmea_handler.add_observer(test_handler)
         self.app.start()
         test_handler.start()
-        reader.start()
         self.app.loop(timeout=5)
-        reader.stop()
+        test_handler.stop()
+
+    def test_good_file(self):
+        if self.app.setup_app() is False:
+            sys.exit(1)
+        test_handler = TestHandler()
+        self.app.nmea_handler.add_observer(test_handler)
+        self.app.start()
+        test_handler.start()
+        self.app.loop(timeout=5)
         test_handler.stop()
 
 if __name__ == '__main__':
