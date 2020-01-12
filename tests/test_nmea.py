@@ -2,7 +2,7 @@
 #coding: utf-8
 
 """ System """
-from __future__ import print_function
+
 import os
 import sys
 
@@ -29,17 +29,17 @@ class TestNmea(unittest.TestCase):
 
     def test_good_file(self):
         path = os.path.join(os.path.dirname(__file__), "resources", "gps_output")
-        self.app.set_args("-G {}".format(path))
+        self.app.set_args("--gps={}".format(path))
         if self.app.setup_app() is False:
             sys.exit(1)
         test_handler = TestHandler()
         self.app.nmea_handler.add_observer(test_handler)
         self.app.start()
         test_handler.start()
-        self.app.loop(timeout=5)
+        self.app.loop(timeout=2)
         test_handler.stop()
 
-    def test_good_file(self):
+    def test_gps_reader(self):
         if self.app.setup_app() is False:
             sys.exit(1)
         test_handler = TestHandler()

@@ -2,7 +2,7 @@
 #coding: utf-8
 
 """ System """
-from __future__ import print_function
+
 import sys
 import os
 import time
@@ -18,7 +18,7 @@ class BlindSailorApp(sihd.App.IApp):
         super(BlindSailorApp, self).__init__("BlindSailorApp")
         self.set_module_path(BlindSailor)
         self.load_app_conf()
-        sihd.Utilities.ILoggable.set_color(True)
+        sihd.Core.ILoggable.set_color(True)
 
     def _setup_app_impl(self):
         self.parse_args()
@@ -27,11 +27,15 @@ class BlindSailorApp(sihd.App.IApp):
         return True
 
     def __configure_serial_gps(self):
-        if self.args.gps:
-            reader = sihd.Readers.sys.LineReader(self.args.gps, app=self)
+        path = self.get_arg("gps")
+        if path:
+            reader = sihd.Readers.sys.LineReader(path=self.args.gps, app=self)
+            reader.set_conf({
+                "path": path
+            })
             self.gps_reader = reader
         else:
-            serial = sihd.Readers.SerialReader(self)
+            serial = sihd.Readers.SerialReader(app=self)
             serial.set_conf({
                 "port": "/dev/ttyAMA0",
                 "baudrate": 9600,
