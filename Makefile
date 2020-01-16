@@ -12,8 +12,13 @@ PYTHON=$(shell command -v python)
 PYTHON3=$(shell command -v python3)
 
 install:
-	@cat resources/install_script.sh
-	@./resources/install_script.sh
+	@./resources/scripts/install.sh && ./resources/scripts/make_links.sh
+
+links:
+	@./resources/scripts/make_links.sh
+
+uninstall:
+	@./resources/scripts/uninstall.sh
 
 tests:
 	@set -e && cd tests && rm -f logs/* && for TEST in `/bin/ls [^_]*.py`; \
