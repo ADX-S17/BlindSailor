@@ -7,11 +7,11 @@ import sys
 import os
 import time
 
-from BlindSailor.srcs.App import BlindSailor
+from BlindSailor.srcs.App import BlindSailorApp
 from sihd.srcs import Core
 
 if __name__ == '__main__':
-    app = BlindSailor()
+    app = BlindSailorApp()
     if app.setup_app() is False:
         sys.exit(1)
     app.start()

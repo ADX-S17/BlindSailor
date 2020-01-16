@@ -22,8 +22,11 @@ class BlindSailorApp(sihd.App.IApp):
 
     def _setup_app_impl(self):
         self.parse_args()
-        self.nmea_handler = BlindSailor.Handlers.NmeaHandler(self)
+        nmea_handler = BlindSailor.Handlers.NmeaHandler(self)
+        self.nmea_handler = nmea_handler
         self.__configure_serial_gps()
+        gui = BlindSailor.GUI.WxPythonGui(self)
+        nmea_handler.add_observer(gui)
         return True
 
     def __configure_serial_gps(self):

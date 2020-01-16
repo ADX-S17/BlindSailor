@@ -33,9 +33,10 @@ class LogFrame(Panel):
         self.create_controls()
         self.bind_events()
         self.do_layout()
+        self.add_logger()
 
     def add_logger(self):
-        log_handler = CursesHandler(win)
+        log_handler = CursesHandler(self)
         log_handler.setFormatter(Core.ILoggable.get_formatter())
         Core.ILoggable.logger.addHandler(log_handler)
         self._log_handler = log_handler

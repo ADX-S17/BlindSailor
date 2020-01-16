@@ -2,8 +2,6 @@
 #coding: utf-8
 
 """ System """
-
-
 import os
 import os.path
 import sys
@@ -13,6 +11,7 @@ wx = None
 
 from sihd.srcs.GUI.IGui import IGui
 from .MainWindow import MainWindow
+from BlindSailor.srcs.Handlers import NmeaHandler
 
 class WxPythonGui(IGui):
 
@@ -24,20 +23,25 @@ class WxPythonGui(IGui):
         if app:
             self.get_app().set_loop(self.start_gui)
 
-    def start_gui(self, **kwargs):
+    def start_gui(self, *args, **kwargs):
         app = wx.App(False)
         self._app = app
         self.frame = MainWindow(None, title="Demo")
         self.frame.Show()
         app.MainLoop()
 
-    def handle(self, reader, message, co):
+    def handle(self, handler, dic):
+        if isinstance(handler, NmeaHandler):
+            print(dic)
+        #comm
+        """
         if self.frame and self.frame.logframe:
             message = message.strip()
             if message != "":
                 self.frame.logframe.log(message)
             if message == "stop":
                 self.stop(True)
+        """
         return True
 
     def on_info(self, reader, info):
