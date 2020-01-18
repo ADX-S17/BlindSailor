@@ -104,10 +104,11 @@ class NmeaHandler(IHandler):
     def handle(self, observable, line):
         if line is None:
             return False
+        if isinstance(line, bytes):
+            line = line.decode('ascii', errors='replace')
         line = line.strip()
         if line == "":
             return True
-        #line = line.decode('ascii', errors='replace').strip()
         try:
             msg = pynmea2.parse(line)
         except:

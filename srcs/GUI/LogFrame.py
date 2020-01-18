@@ -15,7 +15,7 @@ except ImportError:
     wx = None
     Panel = object
 
-class CursesHandler(logging.Handler):
+class WxLogHandler(logging.Handler):
 
     def __init__(self, panel):
         logging.Handler.__init__(self)
@@ -33,16 +33,24 @@ class LogFrame(Panel):
         self.create_controls()
         self.bind_events()
         self.do_layout()
+        self._log_handler = None
         self.add_logger()
 
+    def __del__(self):
+        self.remove_logger()
+
     def add_logger(self):
-        log_handler = CursesHandler(self)
+        self.remove_logger()
+        log_handler = WxLogHandler(self)
         log_handler.setFormatter(Core.ILoggable.get_formatter())
         Core.ILoggable.logger.addHandler(log_handler)
         self._log_handler = log_handler
 
     def remove_logger(self):
-        Core.ILoggable.logger.removeHandler(self._log_handler)
+        logger = self._log_handler
+        if logger:
+            Core.ILoggable.logger.removeHandler(logger)
+            self._log_handler = None
 
     def create_controls(self):
         self.logger = wx.TextCtrl(self,
