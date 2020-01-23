@@ -22,12 +22,37 @@ class BlindSailorApp(sihd.App.IApp):
 
     def _setup_app_impl(self):
         self.parse_args()
-        nmea_handler = BlindSailor.Handlers.NmeaHandler(self)
-        self.nmea_handler = nmea_handler
-        self.__configure_serial_gps()
-        gui = BlindSailor.GUI.WxPythonGui(self)
-        nmea_handler.add_observer(gui)
+        self.__make_gui()
+        self.__make_readers()
+        self.__make_handlers()
+        self.__make_links()
         return True
+
+    def __make_links(self):
+        #self.gps_reader.add_observer(self.nmea_handler)
+        self.nmea_handler.add_to_consume(self.gps_reader)
+        self.wxgui.add_to_consume(self.gsv_handler)
+
+    def __make_gui(self):
+        gui = BlindSailor.GUI.WxPythonGui(self)
+        self.wxgui = gui
+
+    def __make_handlers(self):
+        self.__make_gps_handlers()
+
+    def __make_readers(self):
+        self.__configure_serial_gps()
+
+    """ Handlers """
+
+    def __make_gps_handlers(self):
+        nmea_handler = BlindSailor.Handlers.NmeaHandler(self)
+        gsv_handler = BlindSailor.Handlers.GsvHandler(self)
+        self.nmea_handler = nmea_handler
+        self.gsv_handler = gsv_handler
+        nmea_handler.add_observer(gsv_handler)
+
+    """ Readers """
 
     def __configure_serial_gps(self):
         path = self.get_arg("gps")
@@ -45,7 +70,9 @@ class BlindSailorApp(sihd.App.IApp):
                 "timeout": 1.0,
             })
             self.gps_reader = serial
-        self.gps_reader.add_observer(self.nmea_handler)
+        self.gps_reader.set_multiprocess(True)
+
+    """ Arguments """
 
     def define_args(self, parser):
         """ Create arguments """
