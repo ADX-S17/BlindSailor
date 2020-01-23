@@ -26,8 +26,11 @@ class MainWindow(Frame):
 
     def CreateInteriorWindowComponents(self):
         notebook = wx.Notebook(self)
-        self.logframe = LogFrame(notebook)
-        notebook.AddPage(self.logframe, 'Logger')
+
+        logframe = LogFrame(notebook)
+        self.logframe = logframe
+
+        notebook.AddPage(logframe, 'Logger')
         self.SetClientSize(notebook.GetBestSize())
 
     def CreateExteriorWindowComponents(self):

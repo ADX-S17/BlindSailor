@@ -16,8 +16,9 @@ class TestHandler(sihd.Handlers.IHandler):
     def __init__(self, app=None, name="NmeaHandler"):
         super(TestHandler, self).__init__(app=app, name=name)
 
-    def handle(self, reader, data):
-        print(data)
+    def handle(self, service, data):
+        #print(data)
+        pass
 
 class TestNmea(unittest.TestCase):
 
@@ -39,6 +40,7 @@ class TestNmea(unittest.TestCase):
         self.app.loop(timeout=2)
         test_handler.stop()
 
+    @unittest.skipIf(os.path.exists("/dev/ttyAMA0") is False, "No device available to test gps")
     def test_gps_reader(self):
         if self.app.setup_app() is False:
             sys.exit(1)
