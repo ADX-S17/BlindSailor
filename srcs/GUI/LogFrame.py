@@ -53,10 +53,7 @@ class LogFrame(Panel):
             self._log_handler = None
 
     def create_controls(self):
-        self.logger = wx.TextCtrl(self,
-                size=(800, 400),
-                #style=wx.TE_MULTILINE | wx.TE_READONLY)
-                style=wx.TE_MULTILINE)
+        self.logger = wx.TextCtrl(self, style=wx.TE_MULTILINE|wx.TE_READONLY)
 
     def bind_events(self):
         self.logger.Bind(wx.EVT_TEXT, self.on_text_entered)
@@ -66,7 +63,7 @@ class LogFrame(Panel):
 
     def do_layout(self):
         boxSizer = wx.BoxSizer(orient=wx.HORIZONTAL)
-        boxSizer.Add(self.logger)
+        boxSizer.Add(self.logger, border=5, proportion=1, flag=wx.ALL | wx.EXPAND)
         self.SetSizerAndFit(boxSizer)
 
     # Callback methods:

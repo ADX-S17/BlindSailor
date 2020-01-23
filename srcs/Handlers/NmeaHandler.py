@@ -29,7 +29,6 @@ class NmeaHandler(IHandler, IThreadedService, IConsumer):
     def on_error(self, observable, err):
         self.log_error(err)
 
-    #def handle(self, observable, line):
     def consumed(self, service, line):
         if line is None:
             return False
@@ -43,7 +42,7 @@ class NmeaHandler(IHandler, IThreadedService, IConsumer):
         except:
             return False
         self.notify_observers(msg)
-        return False
+        return True
 
     def _start_impl(self):
         return IThreadedService._start_impl(self)

@@ -34,7 +34,7 @@ class GsvHandler(IHandler, IProducer):
             return int(num)
         return None
 
-    def _handle_gsv_msg(self, msg):
+    def __handle_gsv_msg(self, msg):
         if self._gsv_init is False:
             self.__init_gsv_data()
 
@@ -98,7 +98,7 @@ class GsvHandler(IHandler, IProducer):
         self.log_error(err)
 
     def handle(self, observable, msg):
-        ret = True
+        ret = False
         if msg.sentence_type == 'GSV':
-            ret = self._handle_gsv_msg(msg)
+            ret = self.__handle_gsv_msg(msg)
         return ret

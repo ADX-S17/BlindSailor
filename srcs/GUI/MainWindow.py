@@ -2,13 +2,12 @@
 #coding: utf-8
 
 """ System """
-
-
 import os
 import sys
 import logging
 
 from .LogFrame import LogFrame
+from .GpsFrame import GpsFrame
 
 try:
     import wx
@@ -24,14 +23,22 @@ class MainWindow(Frame):
         self.CreateInteriorWindowComponents()
         self.CreateExteriorWindowComponents()
 
+    def AddGps(self):
+        notebook = self.notebook
+        gpsframe = GpsFrame(notebook)
+        notebook.AddPage(gpsframe, 'GPS')
+        self.SetClientSize(notebook.GetBestSize())
+        self.gpsframe = gpsframe
+
     def CreateInteriorWindowComponents(self):
         notebook = wx.Notebook(self)
-
         logframe = LogFrame(notebook)
-        self.logframe = logframe
-
         notebook.AddPage(logframe, 'Logger')
         self.SetClientSize(notebook.GetBestSize())
+        self.notebook = notebook
+        self.logframe = logframe
+
+    # Exterior
 
     def CreateExteriorWindowComponents(self):
         ''' Create "exterior" window components, such as menu and status
