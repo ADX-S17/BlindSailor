@@ -65,6 +65,7 @@ class WxPythonGui(IGui, IConsumer, IThreadedService):
                 print(k, v)
             """
             pass
+        self.log_info(service, data)
         return True
 
     """

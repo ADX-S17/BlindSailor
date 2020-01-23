@@ -31,7 +31,7 @@ class BlindSailorApp(sihd.App.IApp):
     def __make_links(self):
         self.nmea_handler.add_to_consume(self.gps_reader)
         self.wxgui.activate_gps(self.supported_nmea_handler, self.gsv_handler)
-        self.wxgui.activage_bme(self.bme280_reader)
+        self.wxgui.activate_bme(self.bme280_reader)
 
     def __make_gui(self):
         gui = BlindSailor.GUI.WxPythonGui(self)
@@ -59,12 +59,13 @@ class BlindSailorApp(sihd.App.IApp):
     """ Readers """
 
     def __configure_bme(self):
-        reader = BlindSailor.Readers.Bme280Reader(self)
+        reader = BlindSailor.Readers.Bme280Reader(app=self)
         reader.set_conf({
-            "port": 1,
+            "port": "/dev/i2c-1",
             "addr": 0x76,
         })
-        self.bme280_reader = bme280_reader
+        self.bme280_reader = reader
+        reader.set_multiprocess(True)
 
     def __configure_serial_gps(self):
         path = self.get_arg("gps")

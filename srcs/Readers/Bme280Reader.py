@@ -24,7 +24,7 @@ class Bme280Reader(IReader):
         self.__bus = None
         self.__calib = None
         self._set_default_conf({
-            "port": 0,
+            "port": "/dev/something",
             "addr": 0,
         })
         self.set_run_method(self._sample)
@@ -32,11 +32,13 @@ class Bme280Reader(IReader):
     """ IConfigurable """
 
     def _setup_impl(self):
-        super(Bme280Reader, self)._setup_impl()
+        ret = super(Bme280Reader, self)._setup_impl()
+        if not ret:
+            return False
         addr = self.get_conf("addr")
-        port = self.get_conf("port")
+        port = self.get_conf("port", default=False)
         if port and addr:
-            self.set_source(port, addr)
+            self.set_source(port, int(addr))
         if not self.__calib:
             return False
         return True
@@ -44,15 +46,15 @@ class Bme280Reader(IReader):
     """ Reader """
 
     def set_source(self, port, addr):
-        self.__data = 0
+        s = "Reading on port: {} - addr: {}".format(port, addr)
+        self.log_info(s)
         bus = smbus2.SMBus(port)
         calib = bme280.load_calibration_params(bus, addr)
         self.__bus = bus
         self.__calib = calib
         self.__port = port
         self.__addr = addr
-        s = "Reading on port: {} - addr: {}".format(port, addr)
-        self.log_info(s)
+        self.__data = 0
         return True
 
     def _sample(self):
@@ -60,7 +62,12 @@ class Bme280Reader(IReader):
         if data is None:
             self.stop()
             return False
-        self.produce(data)
+        self.produce({
+            "temperature": data.temperature,
+            "pressure": data.pressure,
+            "humidity": data.humidity,
+            "timestamp": data.timestamp
+        })
         self.__data += 1
         return True
 
