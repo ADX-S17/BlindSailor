@@ -33,10 +33,10 @@ class Bme280Reader(IReader):
 
     def _setup_impl(self):
         super(Bme280Reader, self)._setup_impl()
-        addr = self.get_conf("addr")
         port = self.get_conf("port")
+        addr = self.get_conf("addr")
         if port and addr:
-            self.set_source(port, addr)
+            self.set_source(port, int(addr))
         if not self.__calib:
             return False
         return True
