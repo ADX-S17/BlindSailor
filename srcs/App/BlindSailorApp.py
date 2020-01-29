@@ -70,7 +70,7 @@ class BlindSailorApp(sihd.App.IApp):
     def __configure_serial_gps(self):
         path = self.get_arg("gps")
         if path:
-            reader = sihd.Readers.sys.LineReader(path=self.args.gps, app=self)
+            reader = sihd.Readers.sys.LineReader(app=self)
             reader.set_conf({
                 "path": path
             })
