@@ -23,6 +23,13 @@ class MainWindow(Frame):
         self.CreateInteriorWindowComponents()
         self.CreateExteriorWindowComponents()
 
+    def AddBme(self):
+        notebook = self.notebook
+        bmeframe = BmeFrame(notebook)
+        notebook.AddPage(bmeframe, 'BME')
+        self.SetClientSize(notebook.GetBestSize())
+        self.bmeframe = bmeframe
+
     def AddGps(self):
         notebook = self.notebook
         gpsframe = GpsFrame(notebook)

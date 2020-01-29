@@ -40,6 +40,8 @@ class WxPythonGui(IGui, IConsumer, IThreadedService):
         self.frame = MainWindow(None, title="Demo")
         if self.__modules["GPS"] is True:
             self.frame.AddGps()
+        if self.__modules["BME"] is True:
+            self.frame.AddBme()
         return True
 
     def start_gui(self, *args, **kwargs):
@@ -65,6 +67,7 @@ class WxPythonGui(IGui, IConsumer, IThreadedService):
                 print(k, v)
             """
             pass
+        self.log_info(service, data)
         return True
 
     """
