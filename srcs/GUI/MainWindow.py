@@ -8,6 +8,7 @@ import logging
 
 from .LogFrame import LogFrame
 from .GpsFrame import GpsFrame
+from .BmeFrame import BmeFrame
 
 try:
     import wx

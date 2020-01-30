@@ -12,7 +12,7 @@ PYTHON=$(shell command -v python)
 PYTHON3=$(shell command -v python3)
 
 install:
-	@./resources/scripts/install.sh && ./resources/scripts/make_links.sh
+	@./resources/scripts/install_dep.sh && ./resources/scripts/install_sihd.sh && ./resources/scripts/make_links.sh
 
 links:
 	@./resources/scripts/make_links.sh
