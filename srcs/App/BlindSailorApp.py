@@ -17,7 +17,6 @@ class BlindSailorApp(sihd.App.IApp):
     def __init__(self):
         super(BlindSailorApp, self).__init__("BlindSailorApp")
         self.set_module_path(BlindSailor)
-        self.load_app_conf()
         sihd.Core.ILoggable.set_color(True)
 
     def _setup_app_impl(self):
@@ -32,6 +31,7 @@ class BlindSailorApp(sihd.App.IApp):
         self.nmea_handler.add_to_consume(self.gps_reader)
         self.wxgui.activate_gps(self.supported_nmea_handler, self.gsv_handler)
         self.wxgui.activate_bme(self.bme280_reader)
+        self.set_loop(self.wxgui.gui_loop)
 
     def __make_gui(self):
         gui = BlindSailor.GUI.WxPythonGui(self)
@@ -80,7 +80,7 @@ class BlindSailorApp(sihd.App.IApp):
             serial.set_conf({
                 "port": "/dev/ttyAMA0",
                 "baudrate": 9600,
-                "timeout": 1.0,
+                "timeout": 1,
             })
             self.gps_reader = serial
         self.gps_reader.set_multiprocess(True)

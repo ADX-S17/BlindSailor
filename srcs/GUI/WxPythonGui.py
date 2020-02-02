@@ -24,8 +24,6 @@ class WxPythonGui(IGui, IConsumer, IThreadedService):
             import wx
         super(WxPythonGui, self).__init__(app=app, name=name)
         self.set_run_method(self.consume)
-        if app:
-            self.get_app().set_loop(self.start_gui)
         self.__modules = {
             "GPS": False,
             "BME": False,
@@ -44,7 +42,7 @@ class WxPythonGui(IGui, IConsumer, IThreadedService):
             self.frame.AddBme()
         return True
 
-    def start_gui(self, *args, **kwargs):
+    def gui_loop(self, *args, **kwargs):
         self.frame.Show()
         self._wx_app.MainLoop()
 
@@ -58,6 +56,11 @@ class WxPythonGui(IGui, IConsumer, IThreadedService):
         self.__modules["BME"] = True
 
     # Data
+
+    def consume(self):
+        ret = super().consume()
+        print("hey", ret)
+        return ret
 
     def consumed(self, service, data):
         if isinstance(service, GsvHandler):
@@ -99,6 +102,4 @@ class WxPythonGui(IGui, IConsumer, IThreadedService):
         return ret
 
     def _start_impl(self):
-        if self.get_app() is None:
-            self.start_gui()
         return super()._start_impl()
