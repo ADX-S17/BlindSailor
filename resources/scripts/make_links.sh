@@ -7,9 +7,11 @@ export SIHD_FOLDER="$INSTALL_FOLDER/sihd"
 if [ -d "$SIHD_FOLDER" ]
 then
     echo "Linking $SIHD_FOLDER -> $PY_LOCAL_LIB/sihd"
+    rm -f $PY_LOCAL_LIB/sihd
     ln -s $SIHD_FOLDER $PY_LOCAL_LIB/sihd
 else
     echo "Error: SIHD lib not downloaded - please run install script and run this script again"
 fi
 echo "Linking `pwd` -> $PY_LOCAL_LIB/BlindSailor"
+rm -f $PY_LOCAL_LIB/BlindSailor
 ln -s `pwd` $PY_LOCAL_LIB/BlindSailor

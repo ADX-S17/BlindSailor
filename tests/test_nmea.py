@@ -28,6 +28,7 @@ class TestNmea(unittest.TestCase):
     def tearDown(self):
         self.app.stop()
 
+    """
     def test_good_file(self):
         path = os.path.join(os.path.dirname(__file__), "resources", "gps_output")
         self.app.set_args("--gps={}".format(path))
@@ -35,21 +36,22 @@ class TestNmea(unittest.TestCase):
             sys.exit(1)
         test_handler = TestHandler()
         self.app.nmea_handler.add_observer(test_handler)
-        self.app.start()
+        self.app.start_all()
         test_handler.start()
         self.app.loop(timeout=2)
         test_handler.stop()
+    """
 
     @unittest.skipIf(os.path.exists("/dev/ttyAMA0") is False, "No device available to test gps")
     def test_gps_reader(self):
         if self.app.setup_app() is False:
             sys.exit(1)
         test_handler = TestHandler()
-        self.app.nmea_handler.add_observer(test_handler)
-        self.app.start()
-        test_handler.start()
-        self.app.loop(timeout=5)
-        test_handler.stop()
+        #self.app.nmea_handler.add_observer(test_handler)
+        self.app.start_all()
+        #test_handler.start()
+        self.app.loop()
+        #test_handler.stop()
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

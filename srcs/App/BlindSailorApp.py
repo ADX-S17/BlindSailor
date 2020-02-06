@@ -17,7 +17,6 @@ class BlindSailorApp(sihd.App.IApp):
     def __init__(self):
         super(BlindSailorApp, self).__init__("BlindSailorApp")
         self.set_module_path(BlindSailor)
-        self.load_app_conf()
         sihd.Core.ILoggable.set_color(True)
 
     def _setup_app_impl(self):
@@ -30,8 +29,14 @@ class BlindSailorApp(sihd.App.IApp):
 
     def __make_links(self):
         self.nmea_handler.add_to_consume(self.gps_reader)
+<<<<<<< HEAD
         self.gui.activate_gps(self.supported_nmea_handler, self.gsv_handler)
         self.gui.activate_bme(self.bme280_reader)
+=======
+        self.wxgui.activate_gps(self.supported_nmea_handler, self.gsv_handler)
+        self.wxgui.activate_bme(self.bme280_reader)
+        self.set_loop(self.wxgui.gui_loop)
+>>>>>>> 6bbda085590a3cc5861a63db51a341877dcd09f1
 
     def __make_gui(self):
         if self.get_arg("curses"):
