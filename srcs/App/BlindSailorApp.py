@@ -30,12 +30,15 @@ class BlindSailorApp(sihd.App.IApp):
 
     def __make_links(self):
         self.nmea_handler.add_to_consume(self.gps_reader)
-        self.wxgui.activate_gps(self.supported_nmea_handler, self.gsv_handler)
-        self.wxgui.activate_bme(self.bme280_reader)
+        self.gui.activate_gps(self.supported_nmea_handler, self.gsv_handler)
+        self.gui.activate_bme(self.bme280_reader)
 
     def __make_gui(self):
-        gui = BlindSailor.GUI.WxPythonGui(self)
-        self.wxgui = gui
+        if self.get_arg("curses"):
+            gui = BlindSailor.GUI.BlindCurses(self)
+        else:
+            gui = BlindSailor.GUI.WxPythonGui(self)
+        self.gui = gui
 
     def __make_handlers(self):
         self.__make_gps_handlers()
@@ -59,11 +62,18 @@ class BlindSailorApp(sihd.App.IApp):
     """ Readers """
 
     def __configure_bme(self):
-        reader = BlindSailor.Readers.Bme280Reader(app=self)
-        reader.set_conf({
-            "port": "/dev/i2c-1",
-            "addr": 0x76,
-        })
+        path = self.get_arg("bme")
+        if path:
+            reader = sihd.Readers.sys.LineReader(app=self)
+            reader.set_conf({
+                "path": path
+            })
+        else:
+            reader = BlindSailor.Readers.Bme280Reader(app=self)
+            reader.set_conf({
+                "port": "/dev/i2c-1",
+                "addr": 0x76,
+            })
         self.bme280_reader = reader
         reader.set_multiprocess(True)
 
@@ -74,16 +84,15 @@ class BlindSailorApp(sihd.App.IApp):
             reader.set_conf({
                 "path": path
             })
-            self.gps_reader = reader
         else:
-            serial = sihd.Readers.SerialReader(app=self)
-            serial.set_conf({
+            reader = sihd.Readers.SerialReader(app=self)
+            reader.set_conf({
                 "port": "/dev/ttyAMA0",
                 "baudrate": 9600,
-                "timeout": 1.0,
+                "timeout": 1,
             })
-            self.gps_reader = serial
-        self.gps_reader.set_multiprocess(True)
+        self.gps_reader = reader
+        #self.gps_reader.set_multiprocess(True)
 
     """ Arguments """
 
@@ -93,10 +102,14 @@ class BlindSailorApp(sihd.App.IApp):
                 type=str,
                 default=None,
                 help="Read gps file")
-        parser.add_argument("-S", "--stats",
+        parser.add_argument("-B", "--bme",
+                type=str,
+                default=None,
+                help="Read gps file")
+        parser.add_argument("-C", "--curses",
                 action='store_true',
                 default=False,
-                help="Print stats when printing results")
+                help="Curses gui")
         parser.add_argument("-t", "--time",
                 type=int,
                 default=None,

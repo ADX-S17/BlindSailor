@@ -82,14 +82,15 @@ class GsvHandler(IHandler, IProducer):
         if all(MsgReceived):
             self._gsv_init = False
             SV_azimuth_deg = SV_azimuth[0:Nb_SV_In_View]
-            dic = {
+            data = {
                 "SV_PRN_num": SV_PRN_num[0:Nb_SV_In_View],
                 "SV_azimuth_deg": SV_azimuth_deg,
                 "SV_elevation": SV_elevation[0:Nb_SV_In_View],
                 "SV_SNR": SV_SNR[0:Nb_SV_In_View],
-                "SV_azimuth_rad": [x / 180.0*3.141593 for x in SV_azimuth_deg if x is not None]
+                "SV_azimuth_rad": [x / 180.0*3.141593 for x in SV_azimuth_deg if x is not None],
             }
-            self.produce(dic)
+            #self.produce(data)
+            self.notify_observers(data)
         return True
 
     """ IObservable """

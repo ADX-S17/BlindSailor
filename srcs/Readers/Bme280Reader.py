@@ -62,12 +62,14 @@ class Bme280Reader(IReader):
         if data is None:
             self.stop()
             return False
-        self.produce({
+        data = {
             "temperature": data.temperature,
             "pressure": data.pressure,
             "humidity": data.humidity,
             "timestamp": data.timestamp
-        })
+        }
+        #self.produce(data)
+        self.notify_observers(data)
         self.__data += 1
         return True
 

@@ -23,7 +23,7 @@ class WxPythonGui(IGui, IConsumer, IThreadedService):
         if wx is None:
             import wx
         super(WxPythonGui, self).__init__(app=app, name=name)
-        self.set_run_method(self.consume)
+        #self.set_run_method(self.consume)
         if app:
             self.get_app().set_loop(self.start_gui)
         self.__modules = {
@@ -49,12 +49,15 @@ class WxPythonGui(IGui, IConsumer, IThreadedService):
         self._wx_app.MainLoop()
 
     def activate_gps(self, nmea, gsv):
-        self.add_to_consume(nmea)
-        self.add_to_consume(gsv)
+        #self.add_to_consume(nmea)
+        #self.add_to_consume(gsv)
+        nmea.add_observer(self)
+        gsv.add_observer(self)
         self.__modules["GPS"] = True
 
     def activate_bme(self, bme280):
-        self.add_to_consume(bme280)
+        #self.add_to_consume(bme280)
+        bme280.add_observer(self)
         self.__modules["BME"] = True
 
     # Data
@@ -70,13 +73,14 @@ class WxPythonGui(IGui, IConsumer, IThreadedService):
         self.log_info(service, data)
         return True
 
-    """
-    def update(self, handler, dic):
+    def update(self, service, data):
+        """
         if isinstance(handler, NmeaHandler):
             self.frame.logframe.log(str(dic))
             print(dic)
+        """
+        self.log_info(service, data)
         return True
-    """
 
     def on_info(self, reader, info):
         info = info.strip()
