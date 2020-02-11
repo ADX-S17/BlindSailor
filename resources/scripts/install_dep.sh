@@ -7,4 +7,5 @@ pip3 install pynmea2 --user
 echo "Installing python3 pySerial"
 pip3 install pySerial --user
 echo "Installing python3 RPi.bme280"
+pip3 install smbus --user
 pip3 install RPi.bme280 --user

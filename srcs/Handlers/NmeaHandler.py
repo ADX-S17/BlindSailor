@@ -8,16 +8,16 @@ from sihd.srcs.Handlers.IHandler import IHandler
 from sihd.srcs.Core.IThreadedService import IThreadedService
 from sihd.srcs.Core.IConsumer import IConsumer
 
-class NmeaHandler(IHandler, IThreadedService, IConsumer):
+class NmeaHandler(IHandler):
 
     def __init__(self, app=None, name="NmeaHandler"):
         global pynmea2
         if pynmea2 is None:
             import pynmea2
         super(NmeaHandler, self).__init__(app=app, name=name)
-        self.set_run_method(self.consume)
-        self._set_default_conf({
-        })
+        self.set_step_method(self.consume)
+        self.set_service_threading()
+        self._set_default_conf({})
 
     """ IConfigurable """
 
@@ -29,7 +29,6 @@ class NmeaHandler(IHandler, IThreadedService, IConsumer):
     def on_error(self, observable, err):
         self.log_error(err)
 
-    #def consumed(self, service, line):
     def handle(self, service, line):
         if line is None:
             return False
@@ -42,7 +41,7 @@ class NmeaHandler(IHandler, IThreadedService, IConsumer):
             msg = pynmea2.parse(line)
         except:
             return False
-        self.notify_observers(msg)
+        self.deliver(msg)
         return True
 
     def _start_impl(self):

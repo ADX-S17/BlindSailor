@@ -27,7 +27,7 @@ class Bme280Reader(IReader):
             "port": "/dev/something",
             "addr": 0,
         })
-        self.set_run_method(self._sample)
+        self.set_step_method(self._sample)
 
     """ IConfigurable """
 
@@ -68,8 +68,7 @@ class Bme280Reader(IReader):
             "humidity": data.humidity,
             "timestamp": data.timestamp
         }
-        #self.produce(data)
-        self.notify_observers(data)
+        self.deliver(data)
         self.__data += 1
         return True
 

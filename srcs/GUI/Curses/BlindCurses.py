@@ -9,12 +9,25 @@ import time
 import sihd
 from sihd.srcs.GUI.Curses.ICursesGui import ICursesGui
 
+pyttsx3 = None
+
 class BlindCurses(ICursesGui):
 
     def __init__(self, app=None, name="BlindCurses"):
         super(BlindCurses, self).__init__(app=app, name=name)
-        self.__modules = {
-        }
+        global pyttsx3
+        if pyttsx3 is None:
+            import pyttsx3
+        engine = pyttsx3.init()
+        engine.setProperty('voice', 'french')
+        engine.setProperty('rate', 100)
+        self.__tts_engin = engine
+        self.__modules = {}
+
+    def tts(self, text):
+        engine = self.__tts_engine
+        engine.say(text)
+        engine.runAndWait()
 
     def setup_windows(self):
         super().setup_windows()
@@ -46,7 +59,7 @@ class BlindCurses(ICursesGui):
 
     def input(self, key, curses):
         char = curses.keyname(key).decode()
-        self.__set_str("Pressed: {}".format(char))
+        self.set_main_str("Pressed: {}".format(char))
         if char == 'q':
             return False
         elif char == 'l':
@@ -63,5 +76,5 @@ class BlindCurses(ICursesGui):
         self.refresh_windows(True)
         self.update_panels(True)
 
-    def update(self, service, data):
-        self.log_info(service, data)
+    def update(self, service, *data):
+        self.log_info("{}: {}".format(service, data))

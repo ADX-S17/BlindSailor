@@ -1,0 +1,1 @@
+from .BlindCurses import BlindCurses

@@ -14,6 +14,6 @@ if __name__ == '__main__':
     app = BlindSailorApp()
     if app.setup_app() is False:
         sys.exit(1)
-    app.start()
+    app.start_all()
     app.loop()
     app.stop()

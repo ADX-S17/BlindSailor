@@ -24,22 +24,20 @@ links:
 uninstall:
 	@./resources/scripts/uninstall.sh
 
-tests:
-	@set -e && cd tests && rm -f logs/* && for TEST in `/bin/ls [^_]*.py`; \
-	do \
-		echo "==== Starting test $$TEST ===="; \
-		$(PYTHON3) $$TEST 0>&-;  \
-		echo "==== End of test $$TEST ====\n"; echo "" ;\
-	done && cd ..
+lt:
+	@ls -1 tests | grep test | cut -d '.' -f1 | cut -d '_' -f2 | sed -r '/^\s*$$/d'
 
+tests:
+	@if [ ! -z ${T} ] ; then \
+		$(eval ARGS := $(shell echo "-p '*${T}*'")) true; \
+	fi
+	@$(PYTHON3) -m unittest discover -v -s tests $(ARGS) 0>&-
 
 itests:
-	@set -e && cd tests && rm -f logs/* && for TEST in `/bin/ls [^_]*.py`; \
-	do \
-		echo "==== Starting test $$TEST ===="; \
-		$(PYTHON3) $$TEST;  \
-		echo "==== End of test $$TEST ====\n"; echo "" ;\
-	done && cd ..
+	@if [ ! -z ${T} ] ; then \
+		$(eval ARGS := $(shell echo "-p '*${T}*'")) true; \
+	fi
+	@$(PYTHON3) -m unittest discover -v -s tests $(ARGS)
 
 clean:
 	#Clean .pyc and pycache

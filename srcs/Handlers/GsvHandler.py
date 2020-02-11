@@ -5,13 +5,12 @@
 from sihd.srcs.Handlers.IHandler import IHandler
 from sihd.srcs.Core.IProducer import IProducer
 
-class GsvHandler(IHandler, IProducer):
+class GsvHandler(IHandler):
 
     def __init__(self, app=None, name="GsvHandler"):
         self._gsv_init = False
         super(GsvHandler, self).__init__(app=app, name=name)
-        self._set_default_conf({
-        })
+        self._set_default_conf({})
 
     """ IConfigurable """
 
@@ -89,8 +88,7 @@ class GsvHandler(IHandler, IProducer):
                 "SV_SNR": SV_SNR[0:Nb_SV_In_View],
                 "SV_azimuth_rad": [x / 180.0*3.141593 for x in SV_azimuth_deg if x is not None],
             }
-            #self.produce(data)
-            self.notify_observers(data)
+            self.deliver(data)
         return True
 
     """ IObservable """

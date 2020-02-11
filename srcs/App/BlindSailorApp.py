@@ -28,15 +28,10 @@ class BlindSailorApp(sihd.App.IApp):
         return True
 
     def __make_links(self):
-        self.nmea_handler.add_to_consume(self.gps_reader)
-<<<<<<< HEAD
+        #self.nmea_handler.add_to_consume(self.gps_reader)
+        self.gps_reader.add_observer(self.nmea_handler)
         self.gui.activate_gps(self.supported_nmea_handler, self.gsv_handler)
         self.gui.activate_bme(self.bme280_reader)
-=======
-        self.wxgui.activate_gps(self.supported_nmea_handler, self.gsv_handler)
-        self.wxgui.activate_bme(self.bme280_reader)
-        self.set_loop(self.wxgui.gui_loop)
->>>>>>> 6bbda085590a3cc5861a63db51a341877dcd09f1
 
     def __make_gui(self):
         if self.get_arg("curses"):
@@ -69,25 +64,28 @@ class BlindSailorApp(sihd.App.IApp):
     def __configure_bme(self):
         path = self.get_arg("bme")
         if path:
-            reader = sihd.Readers.sys.LineReader(app=self)
+            reader = sihd.Readers.sys.LineReader(app=self, name="BmeReader")
             reader.set_conf({
-                "path": path
+                "path": path,
+                "thread_frequency": 1,
             })
         else:
             reader = BlindSailor.Readers.Bme280Reader(app=self)
             reader.set_conf({
                 "port": "/dev/i2c-1",
                 "addr": 0x76,
+                "thread_frequency": 1,
             })
         self.bme280_reader = reader
-        reader.set_multiprocess(True)
+        #reader.set_service_multiprocess()
 
     def __configure_serial_gps(self):
         path = self.get_arg("gps")
         if path:
-            reader = sihd.Readers.sys.LineReader(app=self)
+            reader = sihd.Readers.sys.LineReader(app=self, name="GpsReader")
             reader.set_conf({
-                "path": path
+                "path": path,
+                "thread_frequency": 1,
             })
         else:
             reader = sihd.Readers.SerialReader(app=self)
@@ -95,9 +93,10 @@ class BlindSailorApp(sihd.App.IApp):
                 "port": "/dev/ttyAMA0",
                 "baudrate": 9600,
                 "timeout": 1,
+                "thread_frequency": 1,
             })
         self.gps_reader = reader
-        #self.gps_reader.set_multiprocess(True)
+        #self.gps_reader.set_service_multiprocess()
 
     """ Arguments """
 

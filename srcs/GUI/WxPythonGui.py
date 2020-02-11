@@ -23,13 +23,7 @@ class WxPythonGui(IGui, IConsumer, IThreadedService):
         if wx is None:
             import wx
         super(WxPythonGui, self).__init__(app=app, name=name)
-<<<<<<< HEAD
         #self.set_run_method(self.consume)
-        if app:
-            self.get_app().set_loop(self.start_gui)
-=======
-        self.set_run_method(self.consume)
->>>>>>> 6bbda085590a3cc5861a63db51a341877dcd09f1
         self.__modules = {
             "GPS": False,
             "BME": False,
@@ -66,11 +60,6 @@ class WxPythonGui(IGui, IConsumer, IThreadedService):
 
     # Data
 
-    def consume(self):
-        ret = super().consume()
-        print("hey", ret)
-        return ret
-
     def consumed(self, service, data):
         if isinstance(service, GsvHandler):
             """
@@ -82,13 +71,8 @@ class WxPythonGui(IGui, IConsumer, IThreadedService):
         self.log_info(service, data)
         return True
 
-    def update(self, service, data):
-        """
-        if isinstance(handler, NmeaHandler):
-            self.frame.logframe.log(str(dic))
-            print(dic)
-        """
-        self.log_info(service, data)
+    def update(self, service, *data):
+        self.log_info("{}: {}".format(service, data))
         return True
 
     def on_info(self, reader, info):
