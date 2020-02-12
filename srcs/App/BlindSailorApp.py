@@ -31,7 +31,7 @@ class BlindSailorApp(sihd.App.IApp):
         #self.nmea_handler.add_to_consume(self.gps_reader)
         self.gps_reader.add_observer(self.nmea_handler)
         self.gui.activate_gps(self.supported_nmea_handler, self.gsv_handler)
-        self.gui.activate_bme(self.bme280_reader)
+        self.gui.activate_bme(self.bme280_service)
 
     def __make_gui(self):
         if self.get_arg("curses"):
@@ -64,25 +64,28 @@ class BlindSailorApp(sihd.App.IApp):
     def __configure_bme(self):
         path = self.get_arg("bme")
         if path:
-            reader = sihd.Readers.sys.LineReader(app=self, name="BmeReader")
+            reader = sihd.Readers.sys.LineReader(app=self, name="BmeLineReader")
             reader.set_conf({
                 "path": path,
                 "thread_frequency": 1,
             })
+            handler = BlindSailor.Handlers.Bme280Handler(app=self)
+            reader.add_observer(handler)
+            service = handler
         else:
-            reader = BlindSailor.Readers.Bme280Reader(app=self)
-            reader.set_conf({
+            service = BlindSailor.Readers.Bme280Reader(app=self)
+            service.set_conf({
                 "port": "/dev/i2c-1",
                 "addr": 0x76,
                 "thread_frequency": 1,
             })
-        self.bme280_reader = reader
-        #reader.set_service_multiprocess()
+        self.bme280_service = service
+        #service.set_service_multiprocess()
 
     def __configure_serial_gps(self):
         path = self.get_arg("gps")
         if path:
-            reader = sihd.Readers.sys.LineReader(app=self, name="GpsReader")
+            reader = sihd.Readers.sys.LineReader(app=self, name="GpsLineReader")
             reader.set_conf({
                 "path": path,
                 "thread_frequency": 1,

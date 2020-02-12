@@ -3,7 +3,6 @@
 
 """ System """
 from sihd.srcs.Handlers.IHandler import IHandler
-from sihd.srcs.Core.IProducer import IProducer
 
 class GsvHandler(IHandler):
 

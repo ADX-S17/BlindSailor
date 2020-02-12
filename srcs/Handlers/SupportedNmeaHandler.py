@@ -3,7 +3,6 @@
 
 """ System """
 from sihd.srcs.Handlers.IHandler import IHandler
-from sihd.srcs.Core.IProducer import IProducer
 
 class SupportedNmeaHandler(IHandler):
 
@@ -47,7 +46,7 @@ class SupportedNmeaHandler(IHandler):
             "mag": msg.mag_track,
             "mag_sym": msg.mag_track_sym,
         })
-        self.deliver("VTG", datas)
+        self.deliver(datas)
         self._vtg += 1
 
     def __handle_rmc_msg(self, msg):
@@ -80,7 +79,7 @@ class SupportedNmeaHandler(IHandler):
         datas["lat_dir"] = msg.lat_dir
         datas["longitude"] = msg.lon
         datas["lon_dir"] = msg.lon_dir
-        self.deliver("GLL", datas)
+        self.deliver(datas)
         self._gll += 1
 
         """ IObservable """

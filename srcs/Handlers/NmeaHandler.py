@@ -5,8 +5,6 @@
 pynmea2 = None
 
 from sihd.srcs.Handlers.IHandler import IHandler
-from sihd.srcs.Core.IThreadedService import IThreadedService
-from sihd.srcs.Core.IConsumer import IConsumer
 
 class NmeaHandler(IHandler):
 
@@ -43,9 +41,3 @@ class NmeaHandler(IHandler):
             return False
         self.deliver(msg)
         return True
-
-    def _start_impl(self):
-        return IThreadedService._start_impl(self)
-
-    def _stop_impl(self):
-        return IThreadedService._stop_impl(self)
