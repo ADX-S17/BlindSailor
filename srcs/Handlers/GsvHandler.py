@@ -86,6 +86,7 @@ class GsvHandler(IHandler):
                 "SV_elevation": SV_elevation[0:Nb_SV_In_View],
                 "SV_SNR": SV_SNR[0:Nb_SV_In_View],
                 "SV_azimuth_rad": [x / 180.0*3.141593 for x in SV_azimuth_deg if x is not None],
+                "Nb_SV_In_View": Nb_SV_In_View,
             }
             self.deliver(data)
         return True

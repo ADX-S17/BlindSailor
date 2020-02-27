@@ -26,8 +26,12 @@ class WxPythonGui(IGui, IConsumer, IThreadedService):
         #self.set_run_method(self.consume)
         self.__modules = {
             "GPS": False,
+            "SAT": False,
             "BME": False,
         }
+        self.bme280 = None
+        self.gsv = None
+        self.nmea = None
 
     # Config
 
@@ -37,9 +41,11 @@ class WxPythonGui(IGui, IConsumer, IThreadedService):
         self._wx_app = wx.App(False)
         self.frame = MainWindow(None, title="Demo")
         if self.__modules["GPS"] is True:
-            self.frame.AddGps()
+            self.frame.add_gps()
         if self.__modules["BME"] is True:
-            self.frame.AddBme()
+            self.frame.add_bme()
+        if self.__modules["SAT"] is True:
+            self.frame.add_sat()
         return True
 
     def gui_loop(self, *args, **kwargs):
@@ -51,28 +57,40 @@ class WxPythonGui(IGui, IConsumer, IThreadedService):
         #self.add_to_consume(gsv)
         nmea.add_observer(self)
         gsv.add_observer(self)
+        self.nmea = nmea
+        self.gsv = gsv
         self.__modules["GPS"] = True
+        self.__modules["SAT"] = True
 
     def activate_bme(self, bme280):
         #self.add_to_consume(bme280)
+        self.bme280 = bme280
         bme280.add_observer(self)
         self.__modules["BME"] = True
 
+    def update_sat(self, data):
+        self.frame.sat_plot(data)
+        return
+
+    def update_bme(self, data):
+        #self.log_info("{}: {}".format(service, data))
+        return
+
+    def update_gps(self, data):
+        #self.log_info("{}: {}".format(service, data))
+        return
+
     # Data
 
-    def consumed(self, service, data):
-        if isinstance(service, GsvHandler):
-            """
-            self.frame.logframe.log(str(data))
-            for k, v in data.items():
-                print(k, v)
-            """
-            pass
-        self.log_info(service, data)
-        return True
-
     def update(self, service, *data):
-        self.log_info("{}: {}".format(service, data))
+        if service == self.gsv:
+            self.update_sat(data[0])
+        elif service == self.bme280:
+            self.update_bme(data[0])
+        elif service == self.nmea:
+            self.update_gps(data[0])
+        else:
+            self.log_info("{}: {}".format(service, data))
         return True
 
     def on_info(self, reader, info):

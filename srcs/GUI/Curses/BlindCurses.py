@@ -21,7 +21,7 @@ class BlindCurses(ICursesGui):
         self._set_default_conf({})
         engine = pyttsx3.init()
         engine.setProperty('voice', 'french')
-        engine.setProperty('rate', 100)
+        engine.setProperty('rate', 170)
         self.__tts_engine = engine
         self.__modules = {}
         self.bme_data = {}
@@ -44,9 +44,26 @@ class BlindCurses(ICursesGui):
         super().setup_windows()
         self.main = self.get_window("main")
         self.main.box()
+
+        self.main.addstr(2, 5, "Cursed Sailor")
+
+        #Height - Width - Y - X
+        win1, panel1 = self.create_panel(25, 40, 5, 5)
+        win1.addstr(1, 2, "Panel_GPS")
+        win1.box()
+        self.add_panel(win1, panel1, "Panel_GPS")
+
+        win2, panel2 = self.create_panel(10, 25, 5, 50)
+        win2.addstr(1, 2, "Panel_BME")
+        win2.box()
+        self.add_panel(win2, panel2, "Panel_BME")
+
+        panel1.top()
+
+        self.win_gps = win1
+        self.win_bme = win2
+
         self.log_info("Curses rolling")
-        self.refresh_windows()
-        self.update_panels(True)
 
     def activate_gps(self, nmea, gsv):
         #self.add_to_consume(nmea)
@@ -63,22 +80,35 @@ class BlindCurses(ICursesGui):
         self.__bme280 = bme280
         self.__modules["BME"] = True
 
-    def set_main(self, data):
-        win = self.main
-        win.clear()
+    def set_win(self, win, data, title=None):
+        win.erase()
         win.box()
-        i = 2
+        if title:
+            self.win_add_str(win, 1, 2, title)
+            i = 3
+        else:
+            i = 2
         for k, v in data.items():
-            win.addstr(i, 3, "{} = {}".format(k, v))
+            val = v
+            if isinstance(v, dict):
+                val = "{"
+            self.win_add_str(win, i, 2, "{} = {}".format(k, val))
             i += 1
+            if isinstance(v, dict):
+                for child_k, child_v in v.items():
+                    self.win_add_str(win, i, 6, "{} = {}".format(child_k, child_v))
+                    i += 1
+                self.win_add_str(win, i, 2, "}")
+                i += 1
+        win.refresh()
 
     def update_bme(self, data):
         self.bme_data = data
-        self.set_main(data)
+        self.set_win(self.win_bme, data, title="BME")
 
     def update_gps(self, data):
         self.gps_data = data
-        self.set_main(data)
+        self.set_win(self.win_gps, data, title="GPS")
 
     def update_satellite(self, data):
         self.sat_data = data
@@ -96,29 +126,43 @@ class BlindCurses(ICursesGui):
     def input(self, key, curses):
         char = curses.keyname(key).decode()
         self.log_debug("Pressed: {}".format(char))
+        refresh = True
         if char == 'q':
             return False
+        elif char == 'r':
+            self.resize()
         elif char == 'l':
             self.log_info("Logging !")
         elif char == '1':
             self.say_from_data("latitude")
         elif char == '2':
             self.say_from_data("longitude")
-        self.refresh_windows()
-        self.update_panels(True)
+        else:
+            refresh = False
+        if refresh:
+            self.refresh_windows()
+            self.update_panels(True)
         return True
 
     def resize(self):
         super().resize()
         self.clear_windows()
+        self.main.box()
+        self.main.addstr(2, 5, "Cursed Sailor")
+        self.update_bme(self.bme_data)
+        self.update_gps(self.gps_data)
         self.refresh_windows(True)
         self.update_panels(True)
 
     def update(self, service, data):
-        if service == self.__bme280:
-            self.update_bme(data)
-        elif service == self.__nmea:
-            self.update_gps(data)
-        elif service == self.__gsv:
-            self.update_satellite(data)
-        self.log_info("{}: {}".format(service, data))
+        try:
+            if service == self.__bme280:
+                self.update_bme(data)
+            elif service == self.__nmea:
+                self.update_gps(data)
+            elif service == self.__gsv:
+                self.update_satellite(data)
+        except Exception as e:
+            self.stop()
+            self.log_error(e)
+        #self.log_info("{}: {}".format(service, data))

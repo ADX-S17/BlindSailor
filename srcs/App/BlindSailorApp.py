@@ -18,6 +18,7 @@ class BlindSailorApp(sihd.App.IApp):
         super(BlindSailorApp, self).__init__("BlindSailorApp")
         self.set_module_path(BlindSailor)
         sihd.Core.ILoggable.set_color(True)
+        self.__reader_freq = 1
 
     def _setup_app_impl(self):
         self.parse_args()
@@ -36,9 +37,12 @@ class BlindSailorApp(sihd.App.IApp):
     def __make_gui(self):
         if self.get_arg("curses"):
             gui = BlindSailor.GUI.BlindCurses(self)
+            self.__reader_freq = 10
         else:
             gui = BlindSailor.GUI.WxPythonGui(self)
+            self.__reader_freq = 1
         self.gui = gui
+        gui.add_state_observer(self)
 
     def __make_handlers(self):
         self.__make_gps_handlers()
@@ -67,7 +71,7 @@ class BlindSailorApp(sihd.App.IApp):
             reader = sihd.Readers.sys.LineReader(app=self, name="BmeLineReader")
             reader.set_conf({
                 "path": path,
-                "thread_frequency": 1,
+                "thread_frequency": self.__reader_freq,
             })
             handler = BlindSailor.Handlers.Bme280Handler(app=self)
             reader.add_observer(handler)
@@ -77,7 +81,7 @@ class BlindSailorApp(sihd.App.IApp):
             service.set_conf({
                 "port": "/dev/i2c-1",
                 "addr": 0x76,
-                "thread_frequency": 1,
+                "thread_frequency": self.__reader_freq,
             })
         self.bme280_service = service
         #service.set_service_multiprocess()
@@ -88,7 +92,7 @@ class BlindSailorApp(sihd.App.IApp):
             reader = sihd.Readers.sys.LineReader(app=self, name="GpsLineReader")
             reader.set_conf({
                 "path": path,
-                "thread_frequency": 1,
+                "thread_frequency": self.__reader_freq,
             })
         else:
             reader = sihd.Readers.SerialReader(app=self)
@@ -96,7 +100,7 @@ class BlindSailorApp(sihd.App.IApp):
                 "port": "/dev/ttyAMA0",
                 "baudrate": 9600,
                 "timeout": 1,
-                "thread_frequency": 1,
+                "thread_frequency": self.__reader_freq,
             })
         self.gps_reader = reader
         #self.gps_reader.set_service_multiprocess()
@@ -123,4 +127,5 @@ class BlindSailorApp(sihd.App.IApp):
                 help="Timer until stop")
 
     def service_state_changed(self, service, stopped, paused):
-        pass
+        if service == self.gui and stopped:
+            self.stop()

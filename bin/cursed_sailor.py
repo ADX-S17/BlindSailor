@@ -15,6 +15,10 @@ if __name__ == '__main__':
     app.set_args("--gps tests/resources/gps/trace_gps --bme tests/resources/bme/trace_gps --curses")
     if app.setup_app() is False:
         sys.exit(1)
-    app.start_all()
-    app.loop()
+    try:
+        app.start_all()
+        app.loop()
+    except Exception as e:
+        app.stop()
+        app.log_error(e)
     app.stop()

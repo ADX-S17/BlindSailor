@@ -62,7 +62,7 @@ class SupportedNmeaHandler(IHandler):
         datas["lon_dir"] = msg.lon_dir
         datas["speed_over_ground"].update({
             "knots": msg.spd_over_grnd,
-            "knots_sym": "K", #TODO
+            "knots_sym": "N", #TODO
         })
         datas["cap"].update({"true": msg.true_course})
         self.deliver(datas)

@@ -9,10 +9,12 @@ import logging
 from .LogFrame import LogFrame
 from .GpsFrame import GpsFrame
 from .BmeFrame import BmeFrame
+from .SatelliteFrame import SatelliteFrame
 
 try:
     import wx
     Frame = wx.Frame
+    import wx.lib.agw.aui as aui
 except ImportError:
     wx = None
     Frame = object
@@ -24,27 +26,41 @@ class MainWindow(Frame):
         self.CreateInteriorWindowComponents()
         self.CreateExteriorWindowComponents()
 
-    def AddBme(self):
+    def add_bme(self):
         notebook = self.notebook
         bmeframe = BmeFrame(notebook)
         notebook.AddPage(bmeframe, 'BME')
         self.SetClientSize(notebook.GetBestSize())
         self.bmeframe = bmeframe
 
-    def AddGps(self):
+    def add_gps(self):
         notebook = self.notebook
         gpsframe = GpsFrame(notebook)
         notebook.AddPage(gpsframe, 'GPS')
         self.SetClientSize(notebook.GetBestSize())
         self.gpsframe = gpsframe
 
+    def add_sat(self):
+        notebook = self.notebook
+        satframe = SatelliteFrame(notebook)
+        notebook.AddPage(satframe, 'SAT')
+        self.SetClientSize(notebook.GetBestSize())
+        self.satframe = satframe
+
     def CreateInteriorWindowComponents(self):
         notebook = wx.Notebook(self)
+        #notebook = aui.AuiNotebook(self)
+        sizer = wx.BoxSizer()
+        sizer.Add(notebook, 1, wx.EXPAND)
+        self.SetSizer(sizer)
         logframe = LogFrame(notebook)
         notebook.AddPage(logframe, 'Logger')
         self.SetClientSize(notebook.GetBestSize())
         self.notebook = notebook
         self.logframe = logframe
+
+    def sat_plot(self, data):
+        self.satframe.plot(data)
 
     # Exterior
 
