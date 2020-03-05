@@ -9,3 +9,5 @@ pip3 install pySerial --user
 echo "Installing python3 RPi.bme280"
 pip3 install smbus --user
 pip3 install RPi.bme280 --user
+pip3 install pyttsx3
+sudo apt install libespeak-dev

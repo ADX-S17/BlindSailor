@@ -34,7 +34,7 @@ class SatelliteFrame(Panel):
         self.toolbar = NavigationToolbar(self.canvas)
         self.toolbar.Realize()
         self.annotations = []
-        self.color_bar = fig.colorbar(c)
+        self.color_bar = None
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(self.canvas, 1, wx.EXPAND)
         sizer.Add(self.toolbar, 0, wx.LEFT | wx.EXPAND)
@@ -43,7 +43,7 @@ class SatelliteFrame(Panel):
     def get_figure(self):
         return self.figure
 
-    def plot(self, data):
+    def update(self, data):
         SV_azimuth_rad = data["SV_azimuth_rad"]
         SV_elevation = data["SV_elevation"]
         SV_SNR = data["SV_SNR"]
@@ -55,6 +55,9 @@ class SatelliteFrame(Panel):
         ax.clear()
         c = ax.scatter(SV_azimuth_rad, SV_elevation, c=SV_SNR, s=350,
                             cmap='rainbow', alpha=0.75, vmin=0)
+        if self.color_bar is not None:
+            self.color_bar.remove()
+        self.color_bar = self.figure.colorbar(c)
         if self.annotations:
             for ann in self.annotations:
                 ann.remove()

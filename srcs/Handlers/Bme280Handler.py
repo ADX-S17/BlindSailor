@@ -18,9 +18,9 @@ class Bme280Handler(IHandler):
 
     def handle(self, observable, msg):
         fake = {
-            "temperature": 420,
-            "pressure": 1337,
-            "humidity": 1000,
+            "temperature": 42,
+            "pressure": 1000,
+            "humidity": 88,
             "timestamp": 4000002,
         }
         self.deliver(fake)

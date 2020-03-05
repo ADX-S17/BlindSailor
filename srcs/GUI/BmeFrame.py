@@ -21,38 +21,18 @@ class BmeFrame(Panel):
 
     def __init__(self, *args, **kwargs):
         super(BmeFrame, self).__init__(*args, **kwargs)
-        self.referrers = ['friends', 'advertising', 'websearch', 'yellowpages']
-        self.colors = ['blue', 'red', 'yellow', 'orange', 'green', 'purple',
-                       'navy blue', 'black', 'gray']
         self.createControls()
-        self.bindEvents()
         self.doLayout()
 
     def createControls(self):
-        self.logger = wx.TextCtrl(self, style=wx.TE_MULTILINE|wx.TE_READONLY)
-        self.saveButton = wx.Button(self, label="Save")
-        self.nameLabel = wx.StaticText(self, label="Your name:")
-        self.nameTextCtrl = wx.TextCtrl(self, value="Enter here your name")
-        self.referrerLabel = wx.StaticText(self, 
-            label="How did you hear from us?")
-        self.referrerComboBox = wx.ComboBox(self, choices=self.referrers, 
-            style=wx.CB_DROPDOWN)
-        self.insuranceCheckBox = wx.CheckBox(self, 
-            label="Do you want Insured Shipment?")
-        self.colorRadioBox = wx.RadioBox(self, 
-            label="What color would you like?", 
-            choices=self.colors, majorDimension=3, style=wx.RA_SPECIFY_COLS)
+        self.temperatureLabel = wx.StaticText(self, label="Temperature (C):")
+        self.temperatureCtrl = wx.TextCtrl(self, style=wx.TE_READONLY)
 
-    def bindEvents(self):
-        for control, event, handler in \
-            [(self.saveButton, wx.EVT_BUTTON, self.onSave),
-             (self.nameTextCtrl, wx.EVT_TEXT, self.onNameEntered),
-             (self.nameTextCtrl, wx.EVT_CHAR, self.onNameChanged),
-             (self.referrerComboBox, wx.EVT_COMBOBOX, self.onReferrerEntered),
-             (self.referrerComboBox, wx.EVT_TEXT, self.onReferrerEntered),
-             (self.insuranceCheckBox, wx.EVT_CHECKBOX, self.onInsuranceChanged),
-             (self.colorRadioBox, wx.EVT_RADIOBOX, self.onColorchanged)]:
-            control.Bind(event, handler)
+        self.humidityLabel = wx.StaticText(self, label="Humidity (%):")
+        self.humidityCtrl = wx.TextCtrl(self, style=wx.TE_READONLY)
+
+        self.pressureLabel = wx.StaticText(self, label="Pression (HPa):")
+        self.pressureCtrl = wx.TextCtrl(self, style=wx.TE_READONLY)
 
     def doLayout(self):
         ''' Layout the controls by means of sizers. '''
@@ -64,56 +44,20 @@ class BmeFrame(Panel):
         gridSizer = wx.FlexGridSizer(rows=5, cols=2, vgap=10, hgap=10)
 
         # Prepare some reusable arguments for calling sizer.Add():
-        expandOption = dict(flag=wx.EXPAND)
-        noOptions = dict()
-        emptySpace = ((0, 0), noOptions)
-    
-        # Add the controls to the sizers:
-        for control, options in \
-                [(self.nameLabel, noOptions),
-                 (self.nameTextCtrl, expandOption),
-                 (self.referrerLabel, noOptions),
-                 (self.referrerComboBox, expandOption),
-                  emptySpace,
-                 (self.insuranceCheckBox, noOptions),
-                  emptySpace,
-                 (self.colorRadioBox, noOptions),
-                  emptySpace, 
-                 (self.saveButton, dict(flag=wx.ALIGN_CENTER))]:
-            gridSizer.Add(control, **options)
+        gridSizer.Add(self.temperatureLabel)
+        gridSizer.Add(self.temperatureCtrl, flag=wx.EXPAND)
 
-        for control, options in \
-                [(gridSizer, dict(border=5, flag=wx.ALL)),
-                 (self.logger, dict(border=5, flag=wx.ALL|wx.EXPAND, 
-                    proportion=1))]:
-            boxSizer.Add(control, **options)
+        gridSizer.Add(self.humidityLabel)
+        gridSizer.Add(self.humidityCtrl, flag=wx.EXPAND)
+
+        gridSizer.Add(self.pressureLabel)
+        gridSizer.Add(self.pressureCtrl, flag=wx.EXPAND)
+
+        boxSizer.Add(gridSizer, border=5, flag=wx.ALL)
 
         self.SetSizerAndFit(boxSizer)
 
-    # Callback methods:
-
-    def onColorchanged(self, event):
-        self.__log('User wants color: %s'%self.colors[event.GetInt()])
-
-    def onReferrerEntered(self, event):
-        self.__log('User entered referrer: %s'%event.GetString())
-
-    def onSave(self,event):
-        self.__log('User clicked on button with id %d'%event.GetId())
-
-    def onNameEntered(self, event):
-        self.__log('User entered name: %s'%event.GetString())
-
-    def onNameChanged(self, event):
-        self.__log('User typed character: %d'%event.GetKeyCode())
-        event.Skip()
-
-    def onInsuranceChanged(self, event):
-        self.__log('User wants insurance: %s'%bool(event.Checked()))
-
-    # Helper method(s):
-
-    def __log(self, message):
-        ''' Private method to append a string to the logger text
-            control. '''
-        self.logger.AppendText('%s\n'%message)
+    def update(self, data):
+        self.temperatureCtrl.SetValue("{}".format(data["temperature"]))
+        self.humidityCtrl.SetValue("{}".format(data["pressure"]))
+        self.pressureCtrl.SetValue("{}".format(data["humidity"]))

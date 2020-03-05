@@ -20,5 +20,5 @@ if __name__ == '__main__':
         app.loop()
     except Exception as e:
         app.stop()
-        app.log_error(e)
+        raise Exception(e)
     app.stop()

@@ -81,7 +81,4 @@ class Bme280Reader(IReader):
         return super(Bme280Reader, self)._start_impl()
 
     def _stop_impl(self):
-        if self._serial:
-            self._serial.close()
-            self._serial = None
         return super(Bme280Reader, self)._stop_impl()

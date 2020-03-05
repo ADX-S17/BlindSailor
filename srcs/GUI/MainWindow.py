@@ -59,8 +59,11 @@ class MainWindow(Frame):
         self.notebook = notebook
         self.logframe = logframe
 
-    def sat_plot(self, data):
-        self.satframe.plot(data)
+    def satellite_update(self, data):
+        self.satframe.update(data)
+
+    def bme_update(self, data):
+        self.bmeframe.update(data)
 
     # Exterior
 

@@ -69,11 +69,12 @@ class WxPythonGui(IGui, IConsumer, IThreadedService):
         self.__modules["BME"] = True
 
     def update_sat(self, data):
-        self.frame.sat_plot(data)
+        self.frame.satellite_update(data)
         return
 
     def update_bme(self, data):
         #self.log_info("{}: {}".format(service, data))
+        self.frame.bme_update(data)
         return
 
     def update_gps(self, data):
