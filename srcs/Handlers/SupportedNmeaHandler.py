@@ -2,7 +2,7 @@
 #coding: utf-8
 
 """ System """
-from sihd.srcs.Handlers.IHandler import IHandler
+from sihd.Handlers.IHandler import IHandler
 
 class SupportedNmeaHandler(IHandler):
 
@@ -33,7 +33,7 @@ class SupportedNmeaHandler(IHandler):
 
     def __handle_vtg_msg(self, msg):
         datas = self._datas
-        datas["timestamp"] = None
+        #datas["timestamp"] = None
         datas["speed_over_ground"].update({
             "knots": msg.spd_over_grnd_kts,
             "knots_sym": msg.spd_over_grnd_kts_sym,

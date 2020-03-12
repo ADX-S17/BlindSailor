@@ -7,7 +7,7 @@ import sys
 import time
 
 import sihd
-from sihd.srcs.GUI.Curses.ICursesGui import ICursesGui
+from sihd.GUI.Curses.ICursesGui import ICursesGui
 
 pyttsx3 = None
 
@@ -48,12 +48,12 @@ class BlindCurses(ICursesGui):
         self.main.addstr(2, 5, "Cursed Sailor")
 
         #Height - Width - Y - X
-        win1, panel1 = self.create_panel(25, 40, 5, 5)
+        win1, panel1 = self.create_panel(25, 40, 3, 5)
         win1.addstr(1, 2, "Panel_GPS")
         win1.box()
         self.add_panel(win1, panel1, "Panel_GPS")
 
-        win2, panel2 = self.create_panel(10, 25, 5, 50)
+        win2, panel2 = self.create_panel(10, 35, 3, 50)
         win2.addstr(1, 2, "Panel_BME")
         win2.box()
         self.add_panel(win2, panel2, "Panel_BME")
@@ -92,10 +92,14 @@ class BlindCurses(ICursesGui):
             val = v
             if isinstance(v, dict):
                 val = "{"
+            if isinstance(val, float):
+                val = "{0:.3f}".format(val)
             self.win_add_str(win, i, 2, "{} = {}".format(k, val))
             i += 1
             if isinstance(v, dict):
                 for child_k, child_v in v.items():
+                    if isinstance(child_v, float):
+                        child_v = "{0:.3f}".format(child_v)
                     self.win_add_str(win, i, 6, "{} = {}".format(child_k, child_v))
                     i += 1
                 self.win_add_str(win, i, 2, "}")

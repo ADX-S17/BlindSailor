@@ -8,7 +8,7 @@ import os
 import time
 
 from BlindSailor.srcs.App import BlindSailorApp
-from sihd.srcs import Core
+from sihd import Core
 
 if __name__ == '__main__':
     app = BlindSailorApp()

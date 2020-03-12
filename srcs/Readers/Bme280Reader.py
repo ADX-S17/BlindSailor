@@ -9,7 +9,7 @@ import os
 smbus2 = None
 bme280 = None
 
-from sihd.srcs.Readers.IReader import IReader
+from sihd.Readers.IReader import IReader
 
 class Bme280Reader(IReader):
     

@@ -97,7 +97,7 @@ class BlindSailorApp(sihd.App.IApp):
         else:
             reader = sihd.Readers.SerialReader(app=self)
             reader.set_conf({
-                "port": "/dev/ttyAMA0",
+                "port": "/dev/ttyS0",
                 "baudrate": 9600,
                 "timeout": 1,
                 "thread_frequency": self.__reader_freq,

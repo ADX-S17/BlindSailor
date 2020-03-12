@@ -2,7 +2,7 @@ import time
 import BlindSailor
 
 import sihd
-from sihd.srcs.Handlers.IHandler import IHandler
+from sihd.Handlers.IHandler import IHandler
 
 class Handler(IHandler):
 

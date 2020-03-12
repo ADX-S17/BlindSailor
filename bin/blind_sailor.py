@@ -8,11 +8,11 @@ import os
 import time
 
 from BlindSailor.srcs.App import BlindSailorApp
-from sihd.srcs import Core
+from sihd import Core
 
 if __name__ == '__main__':
     app = BlindSailorApp()
-    app.set_args("--gps tests/resources/gps/trace_gps --bme tests/resources/bme/trace_gps")
+    #app.set_args("--gps tests/resources/gps/trace_gps --bme tests/resources/bme/trace_gps")
     if app.setup_app() is False:
         sys.exit(1)
     try:

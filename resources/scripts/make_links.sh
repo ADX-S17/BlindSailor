@@ -2,7 +2,7 @@
 export PY_VER=`python3 -c "import sys; print('{0[0]}.{0[1]}'.format(sys.version_info))"`
 export PY_LOCAL_LIB="$HOME/.local/lib/python$PY_VER/site-packages"
 export INSTALL_FOLDER="`pwd`/dependencies"
-export SIHD_FOLDER="$INSTALL_FOLDER/sihd"
+export SIHD_FOLDER="$INSTALL_FOLDER/sihd/sihd"
 
 if [ -d "$SIHD_FOLDER" ]
 then

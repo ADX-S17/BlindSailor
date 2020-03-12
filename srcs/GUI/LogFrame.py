@@ -6,7 +6,7 @@ import os
 import sys
 import logging
 
-from sihd.srcs import Core
+from sihd import Core
 
 try:
     import wx

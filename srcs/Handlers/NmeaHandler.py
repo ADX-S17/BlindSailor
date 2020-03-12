@@ -4,7 +4,7 @@
 """ System """
 pynmea2 = None
 
-from sihd.srcs.Handlers.IHandler import IHandler
+from sihd.Handlers.IHandler import IHandler
 
 class NmeaHandler(IHandler):
 

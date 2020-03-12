@@ -59,5 +59,5 @@ class BmeFrame(Panel):
 
     def update(self, data):
         self.temperatureCtrl.SetValue("{}".format(data["temperature"]))
-        self.humidityCtrl.SetValue("{}".format(data["pressure"]))
-        self.pressureCtrl.SetValue("{}".format(data["humidity"]))
+        self.humidityCtrl.SetValue("{}".format(data["humidity"]))
+        self.pressureCtrl.SetValue("{}".format(data["pressure"]))

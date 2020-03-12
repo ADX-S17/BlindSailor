@@ -2,7 +2,7 @@
 #coding: utf-8
 
 """ System """
-from sihd.srcs.Handlers.IHandler import IHandler
+from sihd.Handlers.IHandler import IHandler
 
 class GsvHandler(IHandler):
 

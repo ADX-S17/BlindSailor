@@ -9,9 +9,9 @@ import logging
 
 wx = None
 
-from sihd.srcs.GUI.IGui import IGui
-from sihd.srcs.Core.IConsumer import IConsumer
-from sihd.srcs.Core.IThreadedService import IThreadedService
+from sihd.GUI.IGui import IGui
+from sihd.Core.IConsumer import IConsumer
+from sihd.Core.IThreadedService import IThreadedService
 
 from .MainWindow import MainWindow
 from BlindSailor.srcs.Handlers import GsvHandler
