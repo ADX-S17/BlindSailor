@@ -16,7 +16,7 @@ make tests
 * **Francois Le-Berre** - *BrainMaster* - -
 * **Antony Desmaux** - *todo* - [github][https://github.com/ADX-S17]
 * **Frederic Iovleff** - *todo* - -
-* **Maxence Dufaud** - *todo* - [github](https://github.com/mdufaud)
+* **Maxence Dufaud** - *SoftwareMaster* - [github](https://github.com/mdufaud)
 
 ***********************************************************
 ***		TEXT TO SPEECH (TTS)			***
