@@ -7,11 +7,11 @@ import sys
 import time
 
 import sihd
-from sihd.GUI.Curses.ICursesGui import ICursesGui
+from sihd.gui.curses.ACursesGui import ACursesGui
 
 pyttsx3 = None
 
-class BlindCurses(ICursesGui):
+class BlindCurses(ACursesGui):
 
     def __init__(self, app=None, name="BlindCurses"):
         super(BlindCurses, self).__init__(app=app, name=name)

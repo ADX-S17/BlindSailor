@@ -1,22 +1,19 @@
 #!/usr/bin/python
 #coding: utf-8
 
-""" System """
-from sihd.Handlers.IHandler import IHandler
+from sihd.handlers.AHandler import AHandler
 
-class GsvHandler(IHandler):
+class GsvHandler(AHandler):
 
-    def __init__(self, app=None, name="GsvHandler"):
+    def __init__(self, name="GsvHandler", app=None):
         self._gsv_init = False
-        super(GsvHandler, self).__init__(app=app, name=name)
-        self._set_default_conf({})
+        super().__init__(app=app, name=name)
+        self.add_channel_input('message')
+        self.add_channel("output")
 
-    """ IConfigurable """
-
-    def _setup_impl(self):
-        return True
-
-    """ Gsv """
+    #
+    # GSV
+    #
 
     def __init_gsv_data(self):
         self._GsvMsgReceived = None
@@ -30,7 +27,7 @@ class GsvHandler(IHandler):
     def __get_int(self, num):
         if num:
             return int(num)
-        return None
+        return 0
 
     def __handle_gsv_msg(self, msg):
         if self._gsv_init is False:
@@ -75,29 +72,24 @@ class GsvHandler(IHandler):
             SV_azimuth[offset + 3] = self.__get_int(msg.azimuth_4)
             SV_elevation[offset + 3] = self.__get_int(msg.elevation_deg_4)
             SV_SNR[offset + 3] = self.__get_int(msg.snr_4)
-            
+
         MsgReceived[Num_CurMsg - 1] = True
         if all(MsgReceived):
             self._gsv_init = False
-            SV_azimuth_deg = SV_azimuth[0:Nb_SV_In_View]
+            SV_azimuth_deg = SV_azimuth
             data = {
-                "SV_PRN_num": SV_PRN_num[0:Nb_SV_In_View],
+                "SV_PRN_num": SV_PRN_num,
                 "SV_azimuth_deg": SV_azimuth_deg,
-                "SV_elevation": SV_elevation[0:Nb_SV_In_View],
-                "SV_SNR": SV_SNR[0:Nb_SV_In_View],
-                "SV_azimuth_rad": [x / 180.0*3.141593 for x in SV_azimuth_deg if x is not None],
+                "SV_elevation": SV_elevation,
+                "SV_SNR": SV_SNR,
+                "SV_azimuth_rad": [x / 180.0 * 3.141593 if x is not None else 0.0 for x in SV_azimuth_deg],
                 "Nb_SV_In_View": Nb_SV_In_View,
             }
-            self.deliver(data)
+            self.output.write(data)
         return True
 
-    """ IObservable """
-
-    def on_error(self, observable, err):
-        self.log_error(err)
-
-    def handle(self, observable, msg):
-        ret = False
-        if msg.sentence_type == 'GSV':
-            ret = self.__handle_gsv_msg(msg)
-        return ret
+    def handle(self, channel):
+        if channel == self.message:
+            msg = channel.read()
+            if msg is not None and msg.sentence_type == 'GSV':
+                self.__handle_gsv_msg(msg)

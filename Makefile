@@ -24,30 +24,75 @@ links:
 uninstall:
 	@./resources/scripts/uninstall.sh
 
-lt:
-	@ls -1 tests | grep test | cut -d '.' -f1 | cut -d '_' -f2 | sed -r '/^\s*$$/d'
+all:
+	@echo "make lt (=list tests)"
+	@echo "make tests (=run all tests)"
+	@echo "make tests T=app (=run app test only)"
 
-tests:
+lt:
+	@ls -1 tests | grep test | cut -d '.' -f1 | cut -d '_' -f2,3,4 | sed -r '/^\s*$$/d'
+
+test:
 	@if [ ! -z ${T} ] ; then \
 		$(eval ARGS := $(shell echo "-p '*${T}*'")) true; \
 	fi
 	@$(PYTHON3) -m unittest discover -v -s tests $(ARGS) 0>&-
 
-itests:
+itest:
 	@if [ ! -z ${T} ] ; then \
 		$(eval ARGS := $(shell echo "-p '*${T}*'")) true; \
 	fi
 	@$(PYTHON3) -m unittest discover -v -s tests $(ARGS)
 
-clean:
-	#Clean .pyc and pycache
-	find . -name "*.pyc" -type f | xargs rm
-	find . -name "__pycache__" -type d | xargs rmdir
+ftest:
+	@set -e && cd tests && rm -f logs/* && for TEST in `/bin/ls [^_]*.py`; \
+	do \
+		echo "==== Starting test $$TEST ===="; \
+		$(PYTHON3) $$TEST 0>&- ; \
+		if [ "$$?" == "1" ] ; then \
+			echo ;\
+			echo "**************************" ;\
+			echo "**************************" ;\
+			echo "********* FAILED *********" ;\
+			echo "**************************" ;\
+			echo "**************************" ;\
+			echo ;\
+			exit 1;\
+		fi ;\
+		echo "==== End of test $$TEST ====\n"; echo "" ;\
+	done && cd ..
+
+
+fitest:
+	@set -e && cd tests && rm -f logs/* && for TEST in `/bin/ls [^_]*.py`; \
+	do \
+		echo "==== Starting test $$TEST ===="; \
+		$(PYTHON3) $$TEST; \
+		if [ "$$?" == "1" ] ; then \
+			echo ;\
+			echo "**************************" ;\
+			echo "**************************" ;\
+			echo "********* FAILED *********" ;\
+			echo "**************************" ;\
+			echo "**************************" ;\
+			echo ;\
+			exit 1;\
+		fi ;\
+		echo "==== End of test $$TEST ====\n"; echo "" ;\
+	done && cd ..
 
 testclean:
-	@cd tests && rm -f logs/* && rm -f config/* && cd ..
+	@rm -f tests/logs/* && rm -rf tests/output/*
+	@echo "Cleaned test files"
 
-fclean: clean testclean
+clean: testclean
+	#Clean .pyc and pycache
+	@find . -name "*.pyc" -type f | xargs -r rm
+	@find . -name "__pycache__" -type d | xargs -r rmdir
+	@echo "Cleaned python's compiled files"
+	@rm -rf config
+
+fclean: clean
 	rm -rf logs/*
 
 .PHONY: tests clean install fclean testclean

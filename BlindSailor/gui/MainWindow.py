@@ -4,27 +4,20 @@
 """ System """
 import os
 import sys
-import logging
-
-from .LogFrame import LogFrame
+from sihd.gui.wxpython.utils.LogFrame import LogFrame
 from .GpsFrame import GpsFrame
 from .BmeFrame import BmeFrame
 from .SatelliteFrame import SatelliteFrame
 
-try:
-    import wx
-    Frame = wx.Frame
-    import wx.lib.agw.aui as aui
-except ImportError:
-    wx = None
-    Frame = object
+import wx
+import wx.lib.agw.aui as aui
 
-class MainWindow(Frame):
+class MainWindow(wx.Frame):
 
     def __init__(self, *args, **kwargs):
-        super(MainWindow, self).__init__(*args, **kwargs)
-        self.CreateInteriorWindowComponents()
-        self.CreateExteriorWindowComponents()
+        super().__init__(*args, **kwargs)
+        self.create_interior_window_components()
+        self.create_exterior_window_components()
 
     def add_bme(self):
         notebook = self.notebook
@@ -47,34 +40,37 @@ class MainWindow(Frame):
         self.SetClientSize(notebook.GetBestSize())
         self.satframe = satframe
 
-    def CreateInteriorWindowComponents(self):
+    def create_interior_window_components(self):
         notebook = wx.Notebook(self)
         #notebook = aui.AuiNotebook(self)
         sizer = wx.BoxSizer()
         sizer.Add(notebook, 1, wx.EXPAND)
         self.SetSizer(sizer)
         logframe = LogFrame(notebook)
+        logframe.add_handler()
         notebook.AddPage(logframe, 'Logger')
         self.SetClientSize(notebook.GetBestSize())
         self.notebook = notebook
         self.logframe = logframe
 
     def satellite_update(self, data):
-        self.satframe.update(data)
+        wx.CallAfter(self.satframe.update, data)
 
-    def bme_update(self, data):
-        self.bmeframe.update(data)
+    def bme_update(self, temperature, pressure, humidity):
+        wx.CallAfter(self.bmeframe.change_temperature, temperature)
+        wx.CallAfter(self.bmeframe.change_pressure, pressure)
+        wx.CallAfter(self.bmeframe.change_humidity, humidity)
 
     # Exterior
 
-    def CreateExteriorWindowComponents(self):
+    def create_exterior_window_components(self):
         ''' Create "exterior" window components, such as menu and status
             bar. '''
-        self.CreateMenu()
+        self.create_menu()
         self.CreateStatusBar()
-        self.SetTitle()
+        self.SetTitle("BlindSailor")
 
-    def CreateMenu(self):
+    def create_menu(self):
         fileMenu = wx.Menu()
         for id, label, helpText, handler in \
             [
@@ -94,15 +90,10 @@ class MainWindow(Frame):
     # Event handlers:
 
     def OnAbout(self, event):
-        dialog = wx.MessageDialog(self, 'A WxPython Gui',
-                                    'About Sample', wx.OK)
+        dialog = wx.MessageDialog(self, 'A WxPython Gui', 'About Sample', wx.OK)
         dialog.ShowModal()
         dialog.Destroy()
 
     def OnExit(self, event):
-        self.Close()  # Close the main window.
-
-    def SetTitle(self):
-        # MainWindow.SetTitle overrides wx.Frame.SetTitle, so we have to
-        # call it using super:
-        super(MainWindow, self).SetTitle('BlindSailor')
+        self.logframe.remove_handler()
+        self.Close()

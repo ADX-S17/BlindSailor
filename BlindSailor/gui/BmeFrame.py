@@ -4,8 +4,6 @@
 """ System """
 import os
 import sys
-import logging
-
 try:
     import wx
     Panel = wx.Panel
@@ -15,7 +13,7 @@ except ImportError:
 
 class BmeFrame(Panel):
     ''' The BmeFrame class is a wx.Panel that creates a bunch of controls
-        and handlers for callbacks. Doing the layout of the controls is 
+        and handlers for callbacks. Doing the layout of the controls is
         the responsibility of subclasses (by means of the doLayout()
         method). '''
 
@@ -57,7 +55,16 @@ class BmeFrame(Panel):
 
         self.SetSizerAndFit(boxSizer)
 
+    def change_temperature(self, value):
+        self.temperatureCtrl.SetValue("{}".format(value))
+
+    def change_humidity(self, value):
+        self.humidityCtrl.SetValue("{}".format(value))
+
+    def change_pressure(self, value):
+        self.pressureCtrl.SetValue("{}".format(value))
+
     def update(self, data):
-        self.temperatureCtrl.SetValue("{}".format(data["temperature"]))
-        self.humidityCtrl.SetValue("{}".format(data["humidity"]))
-        self.pressureCtrl.SetValue("{}".format(data["pressure"]))
+        self.change_temperature(data['temperature'])
+        self.change_humidity(data['humidity'])
+        self.change_pressure(data['pressure'])

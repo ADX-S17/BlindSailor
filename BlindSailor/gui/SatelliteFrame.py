@@ -6,21 +6,16 @@ import os
 import sys
 import logging
 
-try:
-    import wx
-    Panel = wx.Panel
-    import wx.lib.agw.aui as aui
-    import wx.lib.mixins.inspection as wit
-    import matplotlib
-    import matplotlib.pyplot as plt
-    from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
-    from matplotlib.backends.backend_wxagg import NavigationToolbar2WxAgg as NavigationToolbar
-    matplotlib.use('WXAgg')
-except ImportError:
-    wx = None
-    Panel = object
+import wx
+import wx.lib.agw.aui as aui
+import wx.lib.mixins.inspection as wit
+import matplotlib
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
+from matplotlib.backends.backend_wxagg import NavigationToolbar2WxAgg as NavigationToolbar
+matplotlib.use('WXAgg')
 
-class SatelliteFrame(Panel):
+class SatelliteFrame(wx.Panel):
     def __init__(self, parent, id=-1, dpi=None, **kwargs):
         wx.Panel.__init__(self, parent, id=id, **kwargs)
         fig = matplotlib.figure.Figure(dpi=dpi, figsize=(2, 2))
@@ -53,8 +48,14 @@ class SatelliteFrame(Panel):
         fig = self.figure
         ax = self.ax
         ax.clear()
+        print("NEW SATELLITE")
+        print("SV_azimuth_rad", SV_azimuth_rad, len(SV_azimuth_rad))
+        print("SV_elevation", SV_elevation, len(SV_elevation))
+        print("SV_SNR", SV_SNR, len(SV_SNR))
+        print("")
+        print("")
         c = ax.scatter(SV_azimuth_rad, SV_elevation, c=SV_SNR, s=350,
-                            cmap='rainbow', alpha=0.75, vmin=0)
+                        cmap='rainbow', alpha=0.75, vmin=0)
         if self.color_bar is not None:
             self.color_bar.remove()
         self.color_bar = self.figure.colorbar(c)
